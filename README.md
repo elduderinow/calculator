@@ -1,6 +1,24 @@
-# php mvc boilerplate
-This repo contains a very simple, very basic skelleton for MVC projects.
+# Title: Calculator
 
-This is only meant for educational purposes, not to be used in real life projects!
+Creating a calculator to 
 
-@Author Koen Eelen
+- Repository: `calculator`
+- Link github: https://github.com/elduderinow/calculator
+- Language: HTML, SCSS, PHP, SQL
+
+## WHAT IS A POKEDEX
+
+
+## PURPOSE
+
+
+## FUNCTIONALITIES
+
+
+## PROGRESS
+
+
+
+## THE PROJECT ITSELF & MY OPINION
+
+

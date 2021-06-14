@@ -1,9 +1,15 @@
-.products {
-  .checkout {
-    float: right;
-  }
+table.customer-login  {
+background-color: blue;
+  padding:100px !important;
 
-  .total {
-    margin-top: 50px;
+  tr:last-child td:first-child {
+    border-radius: 10px 0 0 10px;
   }
+  tr:last-child td:last-child {
+    border-radius: 0 10px 10px 0;
+  }
+}
+
+.products {
+  margin-top: 50px;
 }
