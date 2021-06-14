@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 //include all your model files here
-require 'Model/pdo_SQL.php';
+require 'Model/Pdo.php';
 require 'Model/Customer.php';
 
 
@@ -10,4 +10,3 @@ require 'Model/Customer.php';
 require 'Controller/HomepageController.php';
 $controller = new HomepageController();
 $controller->render($_GET, $_POST);
-
