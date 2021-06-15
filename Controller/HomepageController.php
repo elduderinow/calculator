@@ -1,20 +1,27 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
-class HomepageController
-{
+class HomepageController {
     //render function with both $_GET and $_POST vars available if it would be needed.
-    public function render(array $GET, array $POST)
-    {
+    public function render(array $GET, array $POST) {
         $pdo = Connection::Open();
 
-        function getProducts($pdo)
-        {
-            $handle = $pdo->prepare('SELECT product.name, product.price FROM product ORDER BY product.name');
+        function getProducts($pdo) {
+            $handle = $pdo->prepare('SELECT * FROM product');
             $handle->execute();
             $products = $handle->fetchAll();
+            return $products;
         }
 
+        function createProducts($pdo) {
+            $products = getProducts($pdo);
+            $result = [];
+            foreach ($products as $product) {
+                $new_product = new Product((int)$product['id'], $product['name'], (int)$product['price']);
+                $result[] = $new_product;
+            };
+            return $result;
+        }
 
         $handle = $pdo->prepare('SELECT id, firstname, lastname, group_id, fixed_discount, variable_discount FROM customer ORDER BY firstname');
         $handle->execute();
@@ -26,9 +33,10 @@ class HomepageController
 
         foreach ($customersGroup as $customerGroup) {
             $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
-            var_dump($customGroup->getId());
-        }
+        };
 
+        // Run function
+        $products = createProducts($pdo);
         //load the view
         require 'View/homepage.php';
     }
