@@ -27,16 +27,34 @@ class HomepageController {
         $handle->execute();
         $customers = $handle->fetchAll();
 
-        $handle = $pdo->prepare('SELECT id, name, parent_id, fixed_discount, variable_discount FROM customer_group');
-        $handle->execute();
-        $customersGroup = $handle->fetchAll();
 
-        foreach ($customersGroup as $customerGroup) {
-            $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
-        };
+        //Customersgroup
+        function getCustomersGroup($pdo) {
+            $handle = $pdo->prepare('SELECT id, name, parent_id, fixed_discount, variable_discount FROM customer_group');
+            $handle->execute();
+            $customersGroup = $handle->fetchAll();
+            return $customersGroup;
+        }
+
+        function createCustomersGroup($pdo) {
+            $customersGroup = getCustomersGroup($pdo);
+            $result = [];
+            foreach ($customersGroup as $customerGroup) {
+                $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
+                $result[] = $customGroup;
+            };
+            return $result;
+        }
+
+
 
         // Run function
         $products = createProducts($pdo);
+        $customersGroup = createCustomersGroup($pdo);
+
+        var_dump($products);
+        var_dump($customersGroup);
+
         //load the view
         require 'View/homepage.php';
     }
