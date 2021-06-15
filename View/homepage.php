@@ -11,11 +11,14 @@
             <form method="post">
               <label for="customer-select">Choose a customer:</label>
               <select name="customer-select" id="customer-select">
-                <?php foreach ($customers as $customer): ?>
-                <option value=" <?php echo htmlspecialchars($customer['id']) ?>">
-                  <?php echo htmlspecialchars($customer['firstname']) . " " . htmlspecialchars($customer['lastname']) ?>
+                  <?php foreach ($customers as $customer):
+                    $customerObj = new Customer($customer['firstname'], $customer['lastname'], (int)$customer["fixed_discount"],
+                        (int)$customer["variable_discount"], (int)$customer["id"], (int)$customer["group_id"]);
+                    ?>
+                <option value=" <?php echo htmlspecialchars($customerObj -> getId()) ?>">
+                  <?php echo htmlspecialchars($customerObj -> getFullName())?>
                 </option>
-                <?php endforeach; ?>
+                <?php endforeach;?>
                 <input type="submit" value="Submit">
               </select>
             </form>
