@@ -23,9 +23,22 @@ class HomepageController {
             return $result;
         }
 
-        $handle = $pdo->prepare('SELECT id, firstname, lastname, group_id, fixed_discount, variable_discount FROM customer ORDER BY firstname');
-        $handle->execute();
-        $customers = $handle->fetchAll();
+        function getCustomers($pdo) {
+            $handle = $pdo->prepare('SELECT * FROM customer');
+            $handle->execute();
+            $customers = $handle->fetchAll();
+            return $customers;
+        }
+
+        function createCustomers($pdo) {
+            $customers = getCustomers($pdo);
+            $result = [];
+            foreach ($customers as $customer) {
+                $customerObj = new Customer($customer['firstname'], $customer['lastname'], (int)$customer['fixed_discount'], (int)$customer['variable_discount'], (int)$customer['id'], (int)$customer['group_id']);
+                $result[] = $customerObj;
+            }
+            return $result;
+        }
 
 
         //Customersgroup
@@ -51,9 +64,7 @@ class HomepageController {
         // Run function
         $products = createProducts($pdo);
         $customersGroup = createCustomersGroup($pdo);
-
-        var_dump($products);
-        var_dump($customersGroup);
+        $customers = createCustomers($pdo);
 
         //load the view
         require 'View/homepage.php';
