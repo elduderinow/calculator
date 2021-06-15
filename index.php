@@ -6,7 +6,6 @@ require 'Model/Pdo.php';
 require 'Model/Customer.php';
 require 'Model/CustomerGroup.php';
 require 'Model/Product.php';
-require 'Model/User.php';
 
 
 //include all your controllers here
