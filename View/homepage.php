@@ -11,12 +11,18 @@
             <form method="post">
               <label for="customer-select">Choose a customer:</label>
               <select name="customer-select" id="customer-select">
-                  <?php foreach ($customers as $customer):
-                    $customerObj = new Customer($customer['firstname'], $customer['lastname'], (int)$customer["fixed_discount"],
-                        (int)$customer["variable_discount"], (int)$customer["id"], (int)$customer["group_id"]);
+                <?php foreach ($customers as $customer):
+                    $customerObj = new Customer(
+                        $customer['firstname'],
+                        $customer['lastname'],
+                        (int)$customer['fixed_discount'],
+                        (int)$customer['variable_discount'],
+                        (int)$customer['id'],
+                        (int)$customer['group_id']
+                    );
                     ?>
-                <option value=" <?php echo htmlspecialchars($customerObj -> getId()) ?>">
-                  <?php echo htmlspecialchars($customerObj -> getFullName())?>
+                <option value=" <?php echo htmlspecialchars($customerObj->getId()) ?>">
+                  <?php echo htmlspecialchars($customerObj->getFullName())?>
                 </option>
                 <?php endforeach;?>
                 <input type="submit" value="Submit">
@@ -37,8 +43,8 @@
           <tbody>
             <?php foreach ($products as $product): ?>
             <tr>
-              <td><?php echo htmlspecialchars($product['name']) ?></td>
-              <td><?php echo "€" . htmlspecialchars($product['price'] / 100) ?></td>
+              <td><?php echo htmlspecialchars($product->getName()) ?></td>
+              <td><?php echo '€' . htmlspecialchars($product->getPrice()) ?></td>
               <td>
                 <a href="" class="btn btn-success">Add</a>
               </td>
@@ -82,5 +88,4 @@
     </div>
 </body>
 <?php
-var_dump($customers);
 require 'includes/footer.php' ?>
