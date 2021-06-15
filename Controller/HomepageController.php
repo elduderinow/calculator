@@ -8,9 +8,13 @@ class HomepageController
     {
         $pdo = Connection::Open();
 
-        $handle = $pdo->prepare('SELECT name, price FROM product ORDER BY product.name');
-        $handle->execute();
-        $products = $handle->fetchAll();
+        function getProducts($pdo)
+        {
+            $handle = $pdo->prepare('SELECT product.name, product.price FROM product ORDER BY product.name');
+            $handle->execute();
+            $products = $handle->fetchAll();
+        }
+
 
         $handle = $pdo->prepare('SELECT id, firstname, lastname, group_id, fixed_discount, variable_discount FROM customer ORDER BY firstname');
         $handle->execute();
@@ -21,7 +25,7 @@ class HomepageController
         $customersGroup = $handle->fetchAll();
 
         foreach ($customersGroup as $customerGroup) {
-            $customGroup = new CustomerGroup((int)$customerGroup['id'],$customerGroup['name'],(int)$customerGroup['parent_id'],(int)$customerGroup['fixed_discount'],(int)$customerGroup['variable_discount']);
+            $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
             var_dump($customGroup->getId());
         }
 
@@ -29,4 +33,3 @@ class HomepageController
         require 'View/homepage.php';
     }
 }
-
