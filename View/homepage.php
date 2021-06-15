@@ -78,4 +78,6 @@
       </div>
     </div>
 </body>
-<?php require 'includes/footer.php' ?>
+<?php
+var_dump($customers);
+require 'includes/footer.php' ?>
