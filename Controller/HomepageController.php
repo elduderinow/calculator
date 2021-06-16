@@ -50,48 +50,51 @@ class HomepageController {
             return $customersGroup;
         }
 
-        function createCustomersGroup($pdo) {
-            $customerGroup = getCustomersGroup($pdo);
+        function createCustomersGroup($customerGroup) {
             $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
             return $customGroup;
         }
 
-        function getCompleteCustomerGroups($pdo, $customer, $id = null) {
-            $getDiscount = createCustomersGroup($pdo);
-            $customer->setGroup($getDiscount);
-            if (is_null($getDiscount->getParentId())) {
+        function addSubGroups($pdo, $customer, $id) {
+            if ($id === 0) {
                 return;
             }
 
-            $handle = $pdo->prepare('SELECT cg2.id, cg2.name, cg2.parent_id, cg2.fixed_discount, cg2.variable_discount FROM calculator.customer_group cg1 LEFT JOIN calculator.customer_group as cg2 ON cg1.parent_id = cg2.id WHERE cg1.id = :id;');
-            $value = is_null($id) ? $customer->getGroupId() : $id;
-            $handle->bindValue(':id', $value);
+            $handle = $pdo->prepare('SELECT cg2.id, cg2.name, cg2.parent_id, cg2.fixed_discount, cg2.variable_discount FROM calculator.customer_group cg1 LEFT JOIN calculator.customer_group as cg2 ON cg1.parent_id = cg2.id WHERE cg1.parent_id = :id;');
+            $handle->bindValue(':id', $id);
             $handle->execute();
-            $discount = $handle->fetch();
-            var_dump($discount);
-            $customerGroup1 = new CustomerGroup((int)$discount['id'], $discount['name'], (int)$discount['parent_id'], (int)$discount['fixed_discount'], (int)$discount['variable_discount']);
-            $customer->setGroup($customerGroup1);
-            var_dump($customer);
-            getCompleteCustomerGroups($pdo, $customer, $customerGroup1->getParentId());
+            $customerGroupData = $handle->fetch();
+            $customerGroup = createCustomersGroup($customerGroupData);
+            $customer->setGroup($customerGroup);
+            addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
-        // Run function
-        $products = createProducts($pdo);
+        function getCompleteCustomerGroups($pdo, $customer) {
+            $customerGroupData = getCustomersGroup($pdo);
+            $customerGroup = createCustomersGroup($customerGroupData);
+            $customer->setGroup($customerGroup);
 
+            addSubGroups($pdo, $customer, $customerGroup->getParentId());
+        }
+
+        $xxx = new Customer('Aline', 'Baillargeon', 0, 21, 1, 2);
+        // Run function
         if (isset($_POST['customer-id'])) {
             $customerPost = json_decode($_POST['customer-id'], true);
             $_SESSION['customer-id'] = $customerPost['id'];
             $_SESSION['customer-groupId'] = $customerPost['groupId'];
-            $customersGroup = createCustomersGroup($pdo);
+            getCompleteCustomerGroups($pdo, $xxx);
         }
 
+        $products = createProducts($pdo);
         $customers = createCustomers($pdo);
-        $xxx = new Customer('Aline', 'Baillargeon', 0, 21, 1, 2);
-        $groupdiscount = getCompleteCustomerGroups($pdo, $xxx);
 
-        var_dump($groupdiscount);
+        var_dump(json_encode($xxx));
+        // var_dump(($xxx));
+        var_dump($_POST);
 
         //load the view
         require 'View/homepage.php';
+        var_dump(json_last_error_msg());
     }
 }
