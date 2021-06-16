@@ -38,7 +38,7 @@ class CustomerGroup
         return $this->fixedDiscount;
     }
 
-        public function getVariableDiscount(): int
+    public function getVariableDiscount(): int
     {
         return $this->variableDiscount;
     }
