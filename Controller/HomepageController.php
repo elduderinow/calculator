@@ -77,24 +77,26 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
-        $xxx = new Customer('Aline', 'Baillargeon', 0, 21, 1, 2);
-        // Run function
+        function findCustomer($customer) {
+            if ($customer->getId() === $_SESSION['customer-id']) {
+                return $customer;
+            }
+        }
+
+        // Run functions
+        $products = createProducts($pdo);
+        $customers = createCustomers($pdo);
+
         if (isset($_POST['customer-id'])) {
             $customerPost = json_decode($_POST['customer-id'], true);
             $_SESSION['customer-id'] = $customerPost['id'];
             $_SESSION['customer-groupId'] = $customerPost['groupId'];
-            getCompleteCustomerGroups($pdo, $xxx);
+            $customer = array_filter($customers, 'findCustomer');
+            $customer = reset($customer);
+            getCompleteCustomerGroups($pdo, $customer);
         }
-
-        $products = createProducts($pdo);
-        $customers = createCustomers($pdo);
-
-        var_dump(json_encode($xxx));
-        // var_dump(($xxx));
-        var_dump($_POST);
 
         //load the view
         require 'View/homepage.php';
-        var_dump(json_last_error_msg());
     }
 }
