@@ -59,6 +59,17 @@ class HomepageController {
             return $result;
         }
 
+        //if post isset
+        function getGroupDiscount($pdo){
+            if (isset($_POST[':parent_id'])){
+                ('SELECT cg1.name, cg2.fixed_discount, cg2.variable_discount
+            FROM calculator.customer_group cg1 LEFT JOIN calculator.customer_group as cg2 ON cg1.parent_id = cg2.id;')
+            }
+            else {
+            }
+        }
+
+        getGroupDiscount(5);
 
 
         // Run function
