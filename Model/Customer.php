@@ -8,6 +8,7 @@ class Customer {
     private string $lastname;
     private int $fixedDiscount;
     private int $variableDiscount;
+    private array $groups;
 
     public function __construct(string $firstname, string $lastname, int $fixedDiscount, int $variableDiscount, int $id, int $groupId) {
         $this->id = $id;
@@ -16,6 +17,7 @@ class Customer {
         $this->lastname = $lastname;
         $this->fixedDiscount = $fixedDiscount;
         $this->variableDiscount = $variableDiscount;
+        $this->groups = [];
     }
 
     /**
@@ -52,4 +54,12 @@ class Customer {
     public function getGroupId(): int {
         return $this->groupId;
     }
+
+    /**
+     * Set the value of groups
+     */
+    public function setGroups($group){
+        $this->groups[] = $group;
+    }
+
 }

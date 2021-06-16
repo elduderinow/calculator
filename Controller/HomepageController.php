@@ -59,18 +59,39 @@ class HomepageController
         function createCustomersGroup($pdo)
         {
             $customerGroup = getCustomersGroup($pdo);
-            $result = [];
             $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
-            $result[] = $customGroup;
-            return $result;
+            return $customGroup;
         }
+
+
+        function getGroupDiscount($pdo, $customer, $id=NULL){
+            $getDiscount = createCustomersGroup($pdo);
+            if (is_null($getDiscount->getParentId())){
+                return;
+            }
+
+            $handle = $pdo->prepare('SELECT cg2.id, cg2.name, cg2.parent_id, cg2.fixed_discount, cg2.variable_discount FROM calculator.customer_group cg1 LEFT JOIN calculator.customer_group as cg2 ON cg1.parent_id = cg2.id WHERE cg1.id = :id;');
+            $value = is_null($id) ? $customer->getGroupId() : $id;
+            $handle->bindValue(':id', $value);
+            $handle->execute();
+            $discount = $handle->fetch();
+            var_dump($discount);
+            $customerGroup1 = new CustomerGroup((int)$discount['id'], $discount['name'], (int)$discount['parent_id'], (int)$discount['fixed_discount'], (int)$discount['variable_discount']);
+            $customer->setGroups($customerGroup1);
+            getGroupDiscount($pdo, $customer, $customerGroup1->getParentId());
+        }
+
+
 
 
         // Run function
         $products = createProducts($pdo);
         $customersGroup = createCustomersGroup($pdo);
         $customers = createCustomers($pdo);
+        $xxx = new Customer('Aline', 'Baillargeon', 0, 21, 1, 2);
+        $groupdiscount = getGroupDiscount($pdo, $xxx);
 
+        var_dump($groupdiscount);
         //load the view
         require 'View/homepage.php';
     }
