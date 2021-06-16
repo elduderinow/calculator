@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-class Customer {
+class Customer implements JsonSerializable {
     private int $id;
     private int $groupId;
     private string $firstname;
@@ -18,6 +18,11 @@ class Customer {
         $this->fixedDiscount = $fixedDiscount;
         $this->variableDiscount = $variableDiscount;
         $this->groups = [];
+    }
+
+    public function jsonSerialize() {
+        $data = get_object_vars($this);
+        return $data;
     }
 
     /**
