@@ -58,8 +58,7 @@ class Customer {
     /**
      * Set the value of groups
      */
-    public function setGroups($group){
+    public function setGroup($group) {
         $this->groups[] = $group;
     }
-
 }
