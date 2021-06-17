@@ -25,7 +25,6 @@
                     </form>
                 </div>
             </div>
-
             <!-- products -->
             <table class="products table table-striped table-wide ">
                 <thead>
