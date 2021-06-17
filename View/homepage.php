@@ -7,7 +7,7 @@
         <div class="col-sm products">
             <!-- select customer checkout -->
             <div class="row">
-                <div class="col-6">
+                <div class="col-12">
                     <form method="post">
                         <label for="customer-id">Choose a customer:</label>
                         <select name="customer-id" id="customer-id">
@@ -20,24 +20,52 @@
                                     <?php echo htmlspecialchars($customer->getFullName()) ?>
                                 </option>
                             <?php endforeach; ?>
-                            <input type="submit" value="Submit">
                         </select>
+                        <!-- total checkout -->
+                        <table class="total table table-striped table-wide">
+                            <thead>
+                            <tr>
+                                <th width="25%">Added products</th>
+                                <th width="25%">Amount</th>
+                                <th width="25%">Price</th>
+                                <th width="25%">Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($_SESSION['add'] as $checkProd): ?>
+                                <tr>
+                                    <td><?php echo $checkProd[->getName()]; ?></td>
+                                    <td>1x</td>
+                                    <td><?php echo "€" . $checkProd->getPrice(); ?></td>
+                                    <td>1x</td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <tr>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <form method="post">
+                            <input type="submit" name="button" value="checkout" class="btn btn-success">
+                        </form>
                     </form>
+
                 </div>
             </div>
             <!-- products -->
             <table class="products table table-striped table-wide ">
                 <thead>
                 <tr>
-                    <th width="40%">Product</th>
-                    <th width="40%">Price</th>
-                    <td colspan="2" width="20%"></td>
+                    <th width="25%">Product</th>
+                    <th width="25%"></th>
+                    <th width="25%">Price</th>
+                    <th colspan="2" width="25%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($products as $product): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($product->getName()) ?></td>
+                        <td></td>
                         <td><?php echo '€' . htmlspecialchars($product->getPrice()) ?></td>
                         <td>
                             <form method="get">
@@ -53,30 +81,6 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
-
-            <!-- total checkout -->
-            <table class="total table table-striped table-wide">
-                <thead>
-                <tr>
-                    <th width="40%">Added products</th>
-                    <th width="40%">Total Price</th>
-                    <td colspan="2" width="20%"></td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Mouse pad</td>
-                    <td>54.18€</td>
-                    <td>
-                        <form class="checkout" method="post">
-                            <input type="hidden" name="id" value=""/>
-                            <input type="submit" name="delete" value="Checkout" class="btn btn-primary">
-                        </form>
-                    </td>
-                </tr>
-
                 </tbody>
             </table>
 
