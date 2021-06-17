@@ -95,40 +95,11 @@ class HomepageController {
             return $product;
         }
 
-        // Run functions
-        $products = createProducts($pdo);
-        $customers = createCustomers($pdo);
-        $checkoutProducts = [];
-
-        if (isset($_GET['id']) && isset($_GET['button'])) {
-            if ($_GET['button'] == 'Add') {
-                if (isset($_SESSION['checkout'])) {
-                    $checkoutProducts = $_SESSION['checkout'];
-                }
-                $checkoutProducts[] = getCheckout($products);
-                $_SESSION['checkout'] = $checkoutProducts;
-            } else {
-                $checkoutProducts = $_SESSION['checkout'];
-                foreach ($checkoutProducts as $prods) {
-                    if ($_GET['id'] == $prods->getId()) {
-                        echo $prods->getId();
-                    }
-                }
+        function calcTotalBasket($products) {
+            foreach ($products as $product) {
+                $subSumArr[] = $product->getPrice();
             }
-
-            foreach ($checkoutProducts as $prods) {
-                $subSumArr[] = $prods->getPrice();
-            }
-            var_dump(array_sum($subSumArr));
-        }
-
-        if (isset($_POST['customer-id'])) {
-            $customerPost = json_decode($_POST['customer-id'], true);
-            $_SESSION['customer-id'] = $customerPost['id'];
-            $_SESSION['customer-groupId'] = $customerPost['groupId'];
-            $customer = array_filter($customers, 'findCustomer');
-            $customer = reset($customer);
-            getCompleteCustomerGroups($pdo, $customer);
+            return Array_sum($subSumArr);
         }
 
         //compare group fixed and variable => highest VALUE of customergroup
@@ -160,6 +131,58 @@ class HomepageController {
             }
 
             return $totalPrice;
+        }
+
+        // Run functions
+        $products = createProducts($pdo);
+        $customers = createCustomers($pdo);
+        $checkoutProducts = [];
+        $finalPrice = 0;
+
+        if (isset($_GET['id']) && isset($_GET['button'])) {
+            if ($_GET['button'] == 'Add') {
+                if (isset($_SESSION['checkout'])) {
+                    $checkoutProducts = $_SESSION['checkout'];
+                }
+                $checkoutProducts[] = getCheckout($products);
+                $_SESSION['checkout'] = $checkoutProducts;
+            } else {
+                $checkoutProducts = $_SESSION['checkout'];
+                foreach ($checkoutProducts as $prods) {
+                    if ($_GET['id'] == $prods->getId()) {
+                        echo $prods->getId();
+                    }
+                }
+            }
+        }
+
+        if (isset($_POST['customer-id'])) {
+            $customerPost = json_decode($_POST['customer-id'], true);
+            $_SESSION['customer-id'] = $customerPost['id'];
+            $_SESSION['customer-groupId'] = $customerPost['groupId'];
+            $customer = array_filter($customers, 'findCustomer');
+            $customer = reset($customer);
+            getCompleteCustomerGroups($pdo, $customer);
+
+            // Calculate total price in basket
+            $checkoutProducts = $_SESSION['checkout'];
+            $totalBasket = calcTotalBasket($checkoutProducts);
+
+            // Calculate total price with discounts for customer
+            $customerFixedGroup = $customer->calcFixedDiscounts();
+            $customerFixed = $customer->getFixedDiscount();
+            $customerVarGroup = $customer->calcBiggestVariableDiscount();
+            $bestDiscount = getHighestValueCustomerGroup($totalBasket, $customerFixedGroup, $customerVarGroup);
+
+            if ($bestDiscount === $customerVarGroup) {
+                $customerVar = $customer->getVariableDiscount();
+                $bestVarDiscount = compareVariableDiscountsCustomerAndGroup($customerVar, $customerVarGroup);
+            } else {
+                $bestVarDiscount = 0;
+            }
+
+            $finalPrice = getTotalPrice($totalBasket, $customerFixed, $customerFixedGroup, $bestVarDiscount);
+            $finalPrice = number_format($finalPrice, 2, ',', '');
         }
 
         //load the view
