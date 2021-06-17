@@ -67,5 +67,21 @@ class Customer implements JsonSerializable {
         $this->groups[] = $group;
     }
 
+    public function calcFixedDiscounts() {
+        $total = 0;
+        foreach ($this->groups as $group) {
+            $total += $group->getFixedDiscount();
+        }
+        return $total;
+    }
 
+    public function calcBiggestVariableDiscount() {
+        $bestDiscount = 0;
+        foreach ($this->groups as $group) {
+            if ($group->getVariableDiscount() > $bestDiscount) {
+                $bestDiscount = $group->getVariableDiscount();
+            }
+        }
+        return $bestDiscount;
+    }
 }
