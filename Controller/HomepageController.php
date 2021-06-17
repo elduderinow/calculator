@@ -116,7 +116,7 @@ class HomepageController {
             $customer = reset($customer);
             getCompleteCustomerGroups($pdo, $customer);
         }
-
+        
         //load the view
         require 'View/homepage.php';
     }

@@ -32,9 +32,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($_SESSION['add'] as $checkProd): ?>
+                            <?php foreach ($_SESSION['checkout'] as $checkProd): ?>
                                 <tr>
-                                    <td><?php echo $checkProd[->getName()]; ?></td>
+                                    <td><?php echo $checkProd->getName(); ?></td>
                                     <td>1x</td>
                                     <td><?php echo "€" . $checkProd->getPrice(); ?></td>
                                     <td>1x</td>

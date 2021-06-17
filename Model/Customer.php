@@ -66,4 +66,6 @@ class Customer implements JsonSerializable {
     public function setGroup($group) {
         $this->groups[] = $group;
     }
+
+
 }
