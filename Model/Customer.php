@@ -1,13 +1,14 @@
 <?php
 declare(strict_types=1);
 
-class Customer {
+class Customer implements JsonSerializable {
     private int $id;
     private int $groupId;
     private string $firstname;
     private string $lastname;
     private int $fixedDiscount;
     private int $variableDiscount;
+    private array $groups;
 
     public function __construct(string $firstname, string $lastname, int $fixedDiscount, int $variableDiscount, int $id, int $groupId) {
         $this->id = $id;
@@ -16,6 +17,12 @@ class Customer {
         $this->lastname = $lastname;
         $this->fixedDiscount = $fixedDiscount;
         $this->variableDiscount = $variableDiscount;
+        $this->groups = [];
+    }
+
+    public function jsonSerialize() {
+        $data = get_object_vars($this);
+        return $data;
     }
 
     /**
@@ -51,5 +58,12 @@ class Customer {
      */
     public function getGroupId(): int {
         return $this->groupId;
+    }
+
+    /**
+     * Set the value of groups
+     */
+    public function setGroup($group) {
+        $this->groups[] = $group;
     }
 }
