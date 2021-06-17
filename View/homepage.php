@@ -74,12 +74,6 @@
                                 <input type="submit" name="button" value="Add" class="btn btn-success">
                             </form>
                         </td>
-                        <td>
-                            <form method="get">
-                                <input type="hidden" name="id" value="<?php echo $product->getId() ?>"/>
-                                <input type="submit" name="button" value="Delete" class="btn btn-danger">
-                            </form>
-                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
