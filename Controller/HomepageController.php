@@ -106,7 +106,6 @@ class HomepageController {
             }
             $checkoutProducts[] = getCheckout($products);
             $_SESSION['checkout'] = $checkoutProducts;
-            var_dump($checkoutProducts);
         }
 
         if (isset($_POST['customer-id'])) {
