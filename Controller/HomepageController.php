@@ -1,20 +1,24 @@
 <?php
 declare(strict_types=1);
 
-class HomepageController {
+class HomepageController
+{
     //render function with both $_GET and $_POST vars available if it would be needed.
-    public function render(array $GET, array $POST) {
+    public function render(array $GET, array $POST)
+    {
         session_start();
         $pdo = Connection::Open();
 
-        function getProducts($pdo) {
+        function getProducts($pdo)
+        {
             $handle = $pdo->prepare('SELECT * FROM product');
             $handle->execute();
             $products = $handle->fetchAll();
             return $products;
         }
 
-        function createProducts($pdo) {
+        function createProducts($pdo)
+        {
             $products = getProducts($pdo);
             $result = [];
             foreach ($products as $product) {
@@ -24,14 +28,16 @@ class HomepageController {
             return $result;
         }
 
-        function getCustomers($pdo) {
+        function getCustomers($pdo)
+        {
             $handle = $pdo->prepare('SELECT * FROM customer');
             $handle->execute();
             $customers = $handle->fetchAll();
             return $customers;
         }
 
-        function createCustomers($pdo) {
+        function createCustomers($pdo)
+        {
             $customers = getCustomers($pdo);
             $result = [];
             foreach ($customers as $customer) {
@@ -42,7 +48,8 @@ class HomepageController {
         }
 
         //Customersgroup
-        function getCustomersGroup($pdo) {
+        function getCustomersGroup($pdo)
+        {
             $handle = $pdo->prepare('SELECT customer_group.id, name, parent_id, customer_group.fixed_discount, customer_group.variable_discount FROM customer_group LEFT JOIN customer ON customer.group_id = customer_group.id WHERE customer.group_id = :group_id');
             $handle->bindValue(':group_id', $_SESSION['customer-groupId'] ?: 2);
             $handle->execute();
@@ -50,12 +57,14 @@ class HomepageController {
             return $customersGroup;
         }
 
-        function createCustomersGroup($customerGroup) {
+        function createCustomersGroup($customerGroup)
+        {
             $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
             return $customGroup;
         }
 
-        function addSubGroups($pdo, $customer, $id) {
+        function addSubGroups($pdo, $customer, $id)
+        {
             if ($id === 0) {
                 return;
             }
@@ -69,7 +78,8 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
-        function getCompleteCustomerGroups($pdo, $customer) {
+        function getCompleteCustomerGroups($pdo, $customer)
+        {
             $customerGroupData = getCustomersGroup($pdo);
             $customerGroup = createCustomersGroup($customerGroupData);
             $customer->setGroup($customerGroup);
@@ -77,19 +87,22 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
-        function findCustomer($customer) {
+        function findCustomer($customer)
+        {
             if ($customer->getId() === $_SESSION['customer-id']) {
                 return $customer;
             }
         }
 
-        function findProduct($product) {
+        function findProduct($product)
+        {
             if ($product->getId() == $_GET['id']) {
                 return $product;
             }
         }
 
-        function getCheckout($products) {
+        function getCheckout($products)
+        {
             $product = array_filter($products, 'findProduct');
             $product = reset($product);
             return $product;
@@ -112,8 +125,8 @@ class HomepageController {
             } else {
                 $checkoutProducts = $_SESSION['checkout'];
                 foreach ($checkoutProducts as $prods) {
-                    if ($_GET['id'] == $prods->getId()){
-                        var_dump($prods);
+                    if ($_GET['id'] == $prods->getId()) {
+                        echo $prods->getId();
                     }
                 }
             }
@@ -122,7 +135,7 @@ class HomepageController {
                 $subSumArr[] = $prods->getPrice();
             }
             var_dump(array_sum($subSumArr));
-        }
+            }
 
         if (isset($_POST['customer-id'])) {
             $customerPost = json_decode($_POST['customer-id'], true);
@@ -133,7 +146,7 @@ class HomepageController {
             getCompleteCustomerGroups($pdo, $customer);
         }
 
-        
+
         //load the view
         require 'View/homepage.php';
     }

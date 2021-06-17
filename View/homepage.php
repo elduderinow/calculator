@@ -24,47 +24,38 @@
                             </select>
                             <!-- total checkout -->
                             <table class="total table table-striped table-wide">
-                                ?>
-                                value= <?php echo '{"id":' . $customer->getId() . ',"groupId":' . $customer->getGroupId() . '}' ?>
-                                >
-                                <?php echo htmlspecialchars($customer->getFullName()) ?>
-                                </option>
+                                <thead>
+                                <tr>
+                                    <th width="25%">Added products</th>
+                                    <th width="25%">Amount</th>
+                                    <th width="25%">Price</th>
+                                    <th width="25%">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($checkoutProducts as $checkProd): ?>
+                                    <tr>
+                                        <td><?php echo $checkProd->getName(); ?></td>
+                                        <td>1x</td>
+                                        <td><?php echo "€" . $checkProd->getPrice(); ?></td>
+                                        <td>1x</td>
+                                        <td>
+                                            <form method="get">
+                                                <input type="hidden" name="id"
+                                                       value="<?php echo $checkProd->getId() ?>"/>
+                                                <input type="submit" name="button" value="Delete"
+                                                       class="btn btn-danger">
+                                            </form>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
-                                </select>
-                                <!-- total checkout -->
-                                <table class="total table table-striped table-wide">
-                                    <thead>
-                                    <tr>
-                                        <th width="25%">Added products</th>
-                                        <th width="25%">Amount</th>
-                                        <th width="25%">Price</th>
-                                        <th width="25%">Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach ($checkoutProducts as $checkProd): ?>
-                                        <tr>
-                                            <td><?php echo $checkProd->getName(); ?></td>
-                                            <td>1x</td>
-                                            <td><?php echo "€" . $checkProd->getPrice(); ?></td>
-                                            <td>1x</td>
-                                            <td>
-                                                <form method="get">
-                                                    <input type="hidden" name="id"
-                                                           value="<?php echo $checkProd->getId() ?>"/>
-                                                    <input type="submit" name="button" value="Delete"
-                                                           class="btn btn-danger">
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                    <tr>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <form method="post">
-                                    <input type="submit" name="button" value="checkout" class="btn btn-success">
-                                </form>
+                                <tr>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <form method="post">
+                                <input type="submit" name="button" value="checkout" class="btn btn-success">
+                            </form>
                         </form>
 
                     </div>
@@ -81,17 +72,6 @@
                     </tr>
                     </thead>
                     <tbody>
-
-                    <?php foreach ($_SESSION['checkout'] as $checkProd): ?>
-                        <tr>
-                            <td><?php echo $checkProd->getName(); ?></td>
-                            <td>1x</td>
-                            <td><?php echo '€' . $checkProd->getPrice(); ?></td>
-                            <td>1x</td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <tr>
-                    </tr>
                     <?php foreach ($products as $product): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($product->getName()) ?></td>
