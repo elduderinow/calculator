@@ -66,4 +66,12 @@ class Customer implements JsonSerializable {
     public function setGroup($group) {
         $this->groups[] = $group;
     }
+
+    public function calcFixed() {
+        $total = 0;
+        foreach ($this->groups as $group) {
+            $total += $group->getFixedDiscount();
+        }
+        return $total;
+    }
 }
