@@ -83,9 +83,31 @@ class HomepageController {
             }
         }
 
+        function findProduct($product) {
+            if ($product->getId() == $_GET['id']) {
+                return $product;
+            }
+        }
+
+        function getCheckout($products) {
+            $product = array_filter($products, 'findProduct');
+            $product = reset($product);
+            return $product;
+        }
+
         // Run functions
         $products = createProducts($pdo);
         $customers = createCustomers($pdo);
+        $checkoutProducts = [];
+
+        if (isset($_GET) && isset($_GET['id'])) {
+            if (isset($_SESSION['checkout'])) {
+                $checkoutProducts = $_SESSION['checkout'];
+            }
+            $checkoutProducts[] = getCheckout($products);
+            $_SESSION['checkout'] = $checkoutProducts;
+            var_dump($checkoutProducts);
+        }
 
         if (isset($_POST['customer-id'])) {
             $customerPost = json_decode($_POST['customer-id'], true);
