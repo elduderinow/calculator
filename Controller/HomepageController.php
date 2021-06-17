@@ -95,17 +95,33 @@ class HomepageController {
             return $product;
         }
 
+
         // Run functions
         $products = createProducts($pdo);
         $customers = createCustomers($pdo);
         $checkoutProducts = [];
 
-        if (isset($_GET) && isset($_GET['id'])) {
-            if (isset($_SESSION['checkout'])) {
+
+        if (isset($_GET['id']) && isset($_GET['button'])) {
+            if ($_GET['button'] == "Add") {
+                if (isset($_SESSION['checkout'])) {
+                    $checkoutProducts = $_SESSION['checkout'];
+                }
+                $checkoutProducts[] = getCheckout($products);
+                $_SESSION['checkout'] = $checkoutProducts;
+            } else {
                 $checkoutProducts = $_SESSION['checkout'];
+                foreach ($checkoutProducts as $prods) {
+                    if ($_GET['id'] == $prods->getId()){
+                        var_dump($prods);
+                    }
+                }
             }
-            $checkoutProducts[] = getCheckout($products);
-            $_SESSION['checkout'] = $checkoutProducts;
+
+            foreach ($checkoutProducts as $prods) {
+                $subSumArr[] = $prods->getPrice();
+            }
+            var_dump(array_sum($subSumArr));
         }
 
         if (isset($_POST['customer-id'])) {
@@ -116,6 +132,7 @@ class HomepageController {
             $customer = reset($customer);
             getCompleteCustomerGroups($pdo, $customer);
         }
+
         
         //load the view
         require 'View/homepage.php';
