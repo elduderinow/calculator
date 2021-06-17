@@ -96,6 +96,38 @@ class HomepageController {
             getCompleteCustomerGroups($pdo, $customer);
         }
 
+        //compare group fixed and variable => highest VALUE of customergroup
+        function getHighestValueCustomerGroup($totalPrice ,$fixedValueGroup, $variableDiscountGroup){
+            if ($variableDiscountGroup){
+                $variableValueGroup = $totalPrice*($variableDiscountGroup/100);
+            }
+
+            $highestValue = max($fixedValueGroup, $variableValueGroup);
+            if ($highestValue = $variableValueGroup){
+                return $variableDiscountGroup;
+            }
+            else{
+                return $fixedValueGroup;
+            }
+        }
+
+        //compare customer and group discounts (only if there are variable discounts)
+        function compareVariableDiscountsCustomerAndGroup($variableDiscountCustomer, $variableDiscountCustomerGroup){
+            $highestVariableDiscount = max($variableDiscountCustomer, $variableDiscountCustomerGroup);
+            return $highestVariableDiscount;
+        }
+
+        //calculate total price after discounts
+        function getTotalPrice($totalPrice, $fixedDiscountCustomer, $fixedDiscountCustomerGroup, $variableDiscount){
+            $totalPrice -= $fixedDiscountCustomer;
+            $totalPrice -= $fixedDiscountCustomerGroup;
+            if ($variableDiscount){
+            $totalPrice *= (1 - ($variableDiscount / 100));
+            }
+
+            return $totalPrice;
+            }
+
         //load the view
         require 'View/homepage.php';
     }
