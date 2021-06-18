@@ -7,15 +7,16 @@ class HomepageController {
         session_start();
         $pdo = Connection::Open();
 
-        function getProducts($pdo) {
-            $handle = $pdo->prepare('SELECT * FROM product');
+        function getProducts($pdo, $offset = 0, $limit = 5) {
+            $handle = $pdo->prepare('SELECT * FROM product LIMIT :limit OFFSET :offset;');
+            $handle->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $handle->bindValue(':offset', $offset, PDO::PARAM_INT);
             $handle->execute();
             $products = $handle->fetchAll();
             return $products;
         }
 
-        function createProducts($pdo) {
-            $products = getProducts($pdo);
+        function createProducts($pdo, $products) {
             $result = [];
             foreach ($products as $product) {
                 $new_product = new Product((int)$product['id'], $product['name'], (int)$product['price']);
@@ -136,8 +137,26 @@ class HomepageController {
             return $totalPrice;
         }
 
+        // Calculate offset for pagination
+        $offset = 0;
+        if (isset($_GET['pagval'])) {
+            if (isset($_SESSION['offset'])) {
+                $offset = $_SESSION['offset'];
+            }
+            if ($_GET['pagval'] === 'next') {
+                $offset += 5;
+            } elseif ($_GET['pagval'] === 'prev') {
+                $offset -= 5;
+                if ($offset < 0) {
+                    $offset = 0;
+                }
+            }
+            $_SESSION['offset'] = $offset;
+        }
+
         // Run functions
-        $products = createProducts($pdo);
+        $products = getProducts($pdo, $offset);
+        $products = createProducts($pdo, $products);
         $customers = createCustomers($pdo);
         $checkoutProducts = [];
         $finalPrice = 0;
@@ -172,10 +191,10 @@ class HomepageController {
             $_SESSION['finalPrice'] = $finalPrice;
         }
 
-        function dump(){
+        function dump() {
             var_dump((int)$_GET['id']);
             var_dump($_SESSION['checkout']);
-            echo "----------------------";
+            echo '----------------------';
         }
 
         if (isset($_GET['id']) && isset($_GET['button'])) {
