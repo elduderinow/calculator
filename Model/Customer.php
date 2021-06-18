@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-class Customer implements JsonSerializable {
+class Customer {
     private int $id;
     private int $groupId;
     private string $firstname;
@@ -18,11 +18,6 @@ class Customer implements JsonSerializable {
         $this->fixedDiscount = $fixedDiscount;
         $this->variableDiscount = $variableDiscount;
         $this->groups = [];
-    }
-
-    public function jsonSerialize() {
-        $data = get_object_vars($this);
-        return $data;
     }
 
     /**
@@ -67,6 +62,9 @@ class Customer implements JsonSerializable {
         $this->groups[] = $group;
     }
 
+    /**
+     * Calculate all fixed discounts from customer groups
+     */
     public function calcFixedDiscounts() {
         $total = 0;
         foreach ($this->groups as $group) {
@@ -75,6 +73,9 @@ class Customer implements JsonSerializable {
         return $total;
     }
 
+    /**
+     * Calculate biggest variable discount from customer groups
+     */
     public function calcBiggestVariableDiscount() {
         $bestDiscount = 0;
         foreach ($this->groups as $group) {

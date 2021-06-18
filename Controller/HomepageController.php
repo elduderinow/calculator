@@ -92,18 +92,7 @@ class HomepageController {
             }
         }
 
-        function findProduct($product) {
-            if ($product->getId() == $_GET['id']) {
-                return $product;
-            }
-        }
-
-        // function getCheckout($products) {
-        //     $product = array_filter($products, 'findProduct');
-        //     $product = reset($product);
-        //     return $product;
-        // }
-
+        // Search for one product in the db using an ID
         function getCheckout($pdo) {
             $handle = $pdo->prepare('SELECT * FROM product WHERE id=:id;');
             $handle->bindValue(':id', $_GET['id']);
@@ -112,14 +101,8 @@ class HomepageController {
             return $product;
         }
 
+        // Calculate the total price of all products in the basket
         function calcTotalBasket($products) {
-            foreach ($products as $product) {
-                $subSumArr[] = $product->getPrice();
-            }
-            return Array_sum($subSumArr);
-        }
-
-        function calcTotalAmount($products) {
             foreach ($products as $product) {
                 $subSumArr[] = $product->getPrice();
             }
@@ -182,6 +165,7 @@ class HomepageController {
         $customers = createCustomers($pdo);
         $finalPrice = 0;
 
+        // POST logic
         if (isset($_POST['customer-id'])) {
             $_GET = [];
             $customerPost = json_decode($_POST['customer-id'], true);
@@ -212,20 +196,20 @@ class HomepageController {
             $_SESSION['finalPrice'] = $finalPrice;
         }
 
+        // GET logic
         if (isset($_GET['id']) && isset($_GET['button'])) {
             if (isset($_SESSION['finalPrice'])) {
                 $finalPrice = $_SESSION['finalPrice'];
             }
+            if (isset($_SESSION['checkout'])) {
+                $checkoutProducts = $_SESSION['checkout'];
+            }
             if ($_GET['button'] == 'Add') {
-                if (isset($_SESSION['checkout'])) {
-                    $checkoutProducts = $_SESSION['checkout'];
-                }
                 $product = getCheckout($pdo);
                 $product = createProducts($product);
                 $checkoutProducts[] = reset($product);
                 $_SESSION['checkout'] = $checkoutProducts;
             } else {
-                $checkoutProducts = $_SESSION['checkout'];
                 unset($checkoutProducts[(int)$_GET['id']]);
                 $_SESSION['checkout'] = array_values($checkoutProducts);
                 $checkoutProducts = $_SESSION['checkout'];
