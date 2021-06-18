@@ -139,24 +139,8 @@ class HomepageController {
         $checkoutProducts = [];
         $finalPrice = 0;
 
-        if (isset($_GET['id']) && isset($_GET['button'])) {
-            if ($_GET['button'] == 'Add') {
-                if (isset($_SESSION['checkout'])) {
-                    $checkoutProducts = $_SESSION['checkout'];
-                }
-                $checkoutProducts[] = getCheckout($products);
-                $_SESSION['checkout'] = $checkoutProducts;
-            } else {
-                $checkoutProducts = $_SESSION['checkout'];
-                foreach ($checkoutProducts as $prods) {
-                    if ($_GET['id'] == $prods->getId()) {
-                        echo $prods->getId();
-                    }
-                }
-            }
-        }
-
         if (isset($_POST['customer-id'])) {
+            $_GET = [];
             $customerPost = json_decode($_POST['customer-id'], true);
             $_SESSION['customer-id'] = $customerPost['id'];
             $_SESSION['customer-groupId'] = $customerPost['groupId'];
@@ -182,7 +166,27 @@ class HomepageController {
             }
 
             $finalPrice = getTotalPrice($totalBasket, $customerFixed, $customerFixedGroup, $bestVarDiscount);
+            var_dump($finalPrice);
             $finalPrice = $finalPrice <= 0 ? 0 : number_format($finalPrice, 2, ',', '');
+            $_SESSION['finalPrice'] = $finalPrice;
+        }
+
+        if (isset($_GET['id']) && isset($_GET['button'])) {
+            $finalPrice = $_SESSION['finalPrice'];
+            if ($_GET['button'] == 'Add') {
+                if (isset($_SESSION['checkout'])) {
+                    $checkoutProducts = $_SESSION['checkout'];
+                }
+                $checkoutProducts[] = getCheckout($products);
+                $_SESSION['checkout'] = $checkoutProducts;
+            } else {
+                $checkoutProducts = $_SESSION['checkout'];
+                foreach ($checkoutProducts as $prods) {
+                    if ($_GET['id'] == $prods->getId()) {
+                        echo $prods->getId();
+                    }
+                }
+            }
         }
 
         //load the view
