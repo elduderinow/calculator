@@ -77,7 +77,7 @@
               <td align="right"><?php if (!isset($_POST['customer-id'])) {
                                         echo 'n/a';
                                     } else {
-                                        echo '€ -' . $customerFixed;
+                                        echo '- € ' . $customerFixed;
                                     }?></td>
               <td width="15px"></td>
             <tr>
@@ -86,7 +86,7 @@
               <td align="right"><?php if (!isset($_POST['customer-id'])) {
                                         echo 'n/a';
                                     } else {
-                                        echo '€ -' . $customerFixedGroup;
+                                        echo '- € ' . $customerFixedGroup;
                                     }?></td>
             </tr>
             <tr>
