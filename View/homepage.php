@@ -79,12 +79,14 @@
             <td colspan="3" width="20%">
               <form method="get">
                 <div class="leftbut" style="float:left">
-                  <input type="hidden" name="pagval" value="" />
-                  <input type="submit" name="leftbut" value="&#8592;" class="btn btn-primary">
+                  <input type="hidden" name="pagval" value="prev" />
+                  <input type="submit" value="&#8592;" class="btn btn-primary">
                 </div>
+              </form>
+              <form method="get">
                 <div class="rightbut" style="float:right">
-                  <input type="hidden" name="pagval" value="" />
-                  <input type="submit" name="rightbut" value="&#8594;" class="btn btn-primary">
+                  <input type="hidden" name="pagval" value="next" />
+                  <input type="submit" value="&#8594;" class="btn btn-primary">
                 </div>
               </form>
             </td>
