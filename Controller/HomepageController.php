@@ -110,17 +110,13 @@ class HomepageController {
         }
 
         //compare group fixed and variable => highest VALUE of customergroup
-        function getHighestValueCustomerGroup($totalPrice, $fixedValueGroup, $variableDiscountGroup) {
+        function checkForHighestVariableCustomerGroup($totalPrice, $fixedValueGroup, $variableDiscountGroup) {
             if ($variableDiscountGroup) {
                 $variableValueGroup = $totalPrice * ($variableDiscountGroup / 100);
             }
 
             $highestValue = max($fixedValueGroup, $variableValueGroup);
-            if ($highestValue == $variableValueGroup) {
-                return $variableDiscountGroup;
-            } else {
-                return $fixedValueGroup;
-            }
+            return $highestValue == $variableValueGroup ? true : false;
         }
 
         //compare customer and group discounts (only if there are variable discounts)
@@ -163,13 +159,12 @@ class HomepageController {
             $customerFixedGroup = $customer->calcFixedDiscounts();
             $customerFixed = $customer->getFixedDiscount();
             $customerVarGroup = $customer->calcBiggestVariableDiscount();
-            $bestDiscount = getHighestValueCustomerGroup($totalBasket, $customerFixedGroup, $customerVarGroup);
+            $customerVar = $customer->getVariableDiscount();
 
-            if ($bestDiscount === $customerVarGroup) {
-                $customerVar = $customer->getVariableDiscount();
+            if (checkForHighestVariableCustomerGroup($totalBasket, $customerFixedGroup, $customerVarGroup)) {
                 $bestVarDiscount = compareVariableDiscountsCustomerAndGroup($customerVar, $customerVarGroup);
             } else {
-                $bestVarDiscount = 0;
+                $bestVarDiscount = $customerVar;
             }
 
             $finalPrice = getTotalPrice($totalBasket, $customerFixed, $customerFixedGroup, $bestVarDiscount);
