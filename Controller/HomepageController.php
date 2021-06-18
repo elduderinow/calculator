@@ -172,7 +172,9 @@ class HomepageController {
         }
 
         if (isset($_GET['id']) && isset($_GET['button'])) {
-            $finalPrice = $_SESSION['finalPrice'];
+            if (isset($_SESSION['finalPrice'])) {
+                $finalPrice = $_SESSION['finalPrice'];
+            }
             if ($_GET['button'] == 'Add') {
                 if (isset($_SESSION['checkout'])) {
                     $checkoutProducts = $_SESSION['checkout'];
