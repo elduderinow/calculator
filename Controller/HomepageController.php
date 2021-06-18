@@ -204,12 +204,6 @@ class HomepageController {
             $_SESSION['finalPrice'] = $finalPrice;
         }
 
-        function dump() {
-            var_dump((int)$_GET['id']);
-            var_dump($_SESSION['checkout']);
-            echo '----------------------';
-        }
-
         if (isset($_GET['id']) && isset($_GET['button'])) {
             if (isset($_SESSION['finalPrice'])) {
                 $finalPrice = $_SESSION['finalPrice'];
