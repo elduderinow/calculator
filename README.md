@@ -13,9 +13,10 @@ The purpose of this project is to learn how to fetch data from a database using 
 ## FUNCTIONALITIES
 - MVC pattern
 - Dropdown to select customers (the selections keeps selected after submitting)
-- list of products with an individual ADD button
-- checkout section where the added products appear with a DELETE button.
+- List of products with an individual ADD button
+- Checkout section where the added products appear with a DELETE button.
 - Each SQL table gets loaded only once to reduce loading time and faster querying.
+- Seperate objects for importing the entities with SQL, and for managing the entities.
 - Detailed discount calculations
 - Pagination
 - No errors

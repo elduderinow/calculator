@@ -2,8 +2,7 @@
 
 <body>
   <div class="container">
-    <div class="display-1 text-center">€<?php echo $finalPrice ?></div>
-    <div class="row">
+      <div class="row">
       <div class="col-sm products">
         <!-- select customer checkout -->
         <div class="row">
@@ -55,7 +54,7 @@
           </div>
         </div>
 
-        <table>
+        <table class="table">
           <thead>
             <tr>
               <th> DETAIL PRICE CALCULATION </th>
