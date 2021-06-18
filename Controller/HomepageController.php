@@ -7,15 +7,18 @@ class HomepageController {
         session_start();
         $pdo = Connection::Open();
 
-        function getProducts($pdo) {
-            $handle = $pdo->prepare('SELECT * FROM product');
+        // Get all products
+        function getProducts($pdo, $offset = 0, $limit = 5) {
+            $handle = $pdo->prepare('SELECT * FROM product LIMIT :limit OFFSET :offset;');
+            $handle->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $handle->bindValue(':offset', $offset, PDO::PARAM_INT);
             $handle->execute();
             $products = $handle->fetchAll();
             return $products;
         }
 
-        function createProducts($pdo) {
-            $products = getProducts($pdo);
+        // Create products
+        function createProducts($products) {
             $result = [];
             foreach ($products as $product) {
                 $new_product = new Product((int)$product['id'], $product['name'], (int)$product['price']);
@@ -24,6 +27,7 @@ class HomepageController {
             return $result;
         }
 
+        // Get all customers
         function getCustomers($pdo) {
             $handle = $pdo->prepare('SELECT * FROM customer');
             $handle->execute();
@@ -31,6 +35,7 @@ class HomepageController {
             return $customers;
         }
 
+        // Create customers
         function createCustomers($pdo) {
             $customers = getCustomers($pdo);
             $result = [];
@@ -41,7 +46,7 @@ class HomepageController {
             return $result;
         }
 
-        //Customersgroup
+        // get Customersgroup
         function getCustomersGroup($pdo) {
             $handle = $pdo->prepare('SELECT customer_group.id, name, parent_id, customer_group.fixed_discount, customer_group.variable_discount FROM customer_group LEFT JOIN customer ON customer.group_id = customer_group.id WHERE customer.group_id = :group_id');
             $handle->bindValue(':group_id', $_SESSION['customer-groupId'] ?: 2);
@@ -50,11 +55,13 @@ class HomepageController {
             return $customersGroup;
         }
 
+        // Create customergroup object
         function createCustomersGroup($customerGroup) {
             $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
             return $customGroup;
         }
 
+        // Recursive function to get all subgroups with parent id's
         function addSubGroups($pdo, $customer, $id) {
             if ($id === 0) {
                 return;
@@ -69,6 +76,7 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
+        // Overarching function to group up all customer group related logic
         function getCompleteCustomerGroups($pdo, $customer) {
             $customerGroupData = getCustomersGroup($pdo);
             $customerGroup = createCustomersGroup($customerGroupData);
@@ -77,6 +85,7 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
+        // Find a customer using the id
         function findCustomer($customer) {
             if ($customer->getId() === $_SESSION['customer-id']) {
                 return $customer;
@@ -89,9 +98,17 @@ class HomepageController {
             }
         }
 
-        function getCheckout($products) {
-            $product = array_filter($products, 'findProduct');
-            $product = reset($product);
+        // function getCheckout($products) {
+        //     $product = array_filter($products, 'findProduct');
+        //     $product = reset($product);
+        //     return $product;
+        // }
+
+        function getCheckout($pdo) {
+            $handle = $pdo->prepare('SELECT * FROM product WHERE id=:id;');
+            $handle->bindValue(':id', $_GET['id']);
+            $handle->execute();
+            $product = $handle->fetchAll();
             return $product;
         }
 
@@ -136,10 +153,33 @@ class HomepageController {
             return $totalPrice;
         }
 
-        // Run functions
-        $products = createProducts($pdo);
-        $customers = createCustomers($pdo);
+        // Initialize checkoutProducts array
         $checkoutProducts = [];
+
+        // Calculate offset for pagination
+        $offset = 0;
+        if (isset($_GET['pagval'])) {
+            if (isset($_SESSION['offset'])) {
+                $offset = $_SESSION['offset'];
+            }
+            if ($_GET['pagval'] === 'next') {
+                $offset += 5;
+            } elseif ($_GET['pagval'] === 'prev') {
+                $offset -= 5;
+                if ($offset < 0) {
+                    $offset = 0;
+                }
+            }
+            $_SESSION['offset'] = $offset;
+            if (isset($_SESSION['checkout'])) {
+                $checkoutProducts = $_SESSION['checkout'];
+            }
+        }
+
+        // Run functions
+        $products = getProducts($pdo, $offset);
+        $products = createProducts($products);
+        $customers = createCustomers($pdo);
         $finalPrice = 0;
 
         if (isset($_POST['customer-id'])) {
@@ -172,12 +212,6 @@ class HomepageController {
             $_SESSION['finalPrice'] = $finalPrice;
         }
 
-        function dump(){
-            var_dump((int)$_GET['id']);
-            var_dump($_SESSION['checkout']);
-            echo "----------------------";
-        }
-
         if (isset($_GET['id']) && isset($_GET['button'])) {
             if (isset($_SESSION['finalPrice'])) {
                 $finalPrice = $_SESSION['finalPrice'];
@@ -186,7 +220,9 @@ class HomepageController {
                 if (isset($_SESSION['checkout'])) {
                     $checkoutProducts = $_SESSION['checkout'];
                 }
-                $checkoutProducts[] = getCheckout($products);
+                $product = getCheckout($pdo);
+                $product = createProducts($product);
+                $checkoutProducts[] = reset($product);
                 $_SESSION['checkout'] = $checkoutProducts;
             } else {
                 $checkoutProducts = $_SESSION['checkout'];
