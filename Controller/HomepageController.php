@@ -182,7 +182,7 @@ class HomepageController {
             }
 
             $finalPrice = getTotalPrice($totalBasket, $customerFixed, $customerFixedGroup, $bestVarDiscount);
-            $finalPrice = number_format($finalPrice, 2, ',', '');
+            $finalPrice = $finalPrice <= 0 ? 0 : number_format($finalPrice, 2, ',', '');
         }
 
         //load the view
