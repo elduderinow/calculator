@@ -64,32 +64,32 @@
                     <tr>
                         <td>TOTAL</td>
                         <td width="15px"></td>
-                        <td align="right">€ <?php echo $totalBasket ?></td>
+                        <td align="right"><?php if (!isset($_POST['customer-id'])){echo 'please Update first';} else {echo '€' . $totalBasket;}?></td>
                     </tr>
                     <tr>
                         <td>fixed discount customer</td>
                         <td width="15px"></td>
-                        <td align="right">€ -<?php echo $customerFixed ?></td>
+                        <td align="right"><?php if (!isset($_POST['customer-id'])){echo 'n/a';} else {echo '€ -' . $customerFixed;}?></td>
                         <td width="15px"></td>
                     <tr>
                         <td>fixed discount customer group</td>
                         <td width="15px"></td>
-                        <td align="right">€ -<?php echo $customerFixedGroup ?></td>
+                        <td align="right"><?php if (!isset($_POST['customer-id'])){echo 'n/a';} else {echo '€ -' . $customerFixedGroup;}?></td>
                     </tr>
                     <tr>
                         <td>SUBTOTAL</td>
                         <td width="15px"></td>
-                        <td align="right">€ <?php echo ($totalBasket - $customerFixed - $customerFixedGroup) ?></td>
+                        <td align="right"><?php if (!isset($_POST['customer-id'])){echo 'n/a';} else {echo '€' . ($totalBasket - $customerFixed - $customerFixedGroup);}?></td>
                     </tr>
                     <tr>
                         <td>variable discount (in%)</td>
                         <td width="15px"></td>
-                        <td align="right">-<?php echo $bestVarDiscount ?>%</td>
+                        <td align="right"><?php if (!isset($_POST['customer-id'])){echo 'n/a';} else {echo '-' . $bestVarDiscount . '%';}?></td>
                     </tr>
                     <tr>
                         <td>FINAL TOTAL</td>
                         <td width="15px"></td>
-                        <td align="right">€ <?php echo $finalPrice ?></td>
+                        <td align="right"><?php if (!isset($_POST['customer-id'])){echo 'n/a';} else {echo '€' . $finalPrice;}?></td>
                     </tr>
                     </tbody>
 
