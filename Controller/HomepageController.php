@@ -145,6 +145,9 @@ class HomepageController {
             return $totalPrice;
         }
 
+        // Initialize checkoutProducts array
+        $checkoutProducts = [];
+
         // Calculate offset for pagination
         $offset = 0;
         if (isset($_GET['pagval'])) {
@@ -160,13 +163,15 @@ class HomepageController {
                 }
             }
             $_SESSION['offset'] = $offset;
+            if (isset($_SESSION['checkout'])) {
+                $checkoutProducts = $_SESSION['checkout'];
+            }
         }
 
         // Run functions
         $products = getProducts($pdo, $offset);
         $products = createProducts($products);
         $customers = createCustomers($pdo);
-        $checkoutProducts = [];
         $finalPrice = 0;
 
         if (isset($_POST['customer-id'])) {
