@@ -16,7 +16,7 @@ class HomepageController {
             return $products;
         }
 
-        function createProducts($pdo, $products) {
+        function createProducts($products) {
             $result = [];
             foreach ($products as $product) {
                 $new_product = new Product((int)$product['id'], $product['name'], (int)$product['price']);
@@ -90,9 +90,17 @@ class HomepageController {
             }
         }
 
-        function getCheckout($products) {
-            $product = array_filter($products, 'findProduct');
-            $product = reset($product);
+        // function getCheckout($products) {
+        //     $product = array_filter($products, 'findProduct');
+        //     $product = reset($product);
+        //     return $product;
+        // }
+
+        function getCheckout($pdo) {
+            $handle = $pdo->prepare('SELECT * FROM product WHERE id=:id;');
+            $handle->bindValue(':id', $_GET['id']);
+            $handle->execute();
+            $product = $handle->fetchAll();
             return $product;
         }
 
@@ -156,7 +164,7 @@ class HomepageController {
 
         // Run functions
         $products = getProducts($pdo, $offset);
-        $products = createProducts($pdo, $products);
+        $products = createProducts($products);
         $customers = createCustomers($pdo);
         $checkoutProducts = [];
         $finalPrice = 0;
@@ -205,7 +213,9 @@ class HomepageController {
                 if (isset($_SESSION['checkout'])) {
                     $checkoutProducts = $_SESSION['checkout'];
                 }
-                $checkoutProducts[] = getCheckout($products);
+                $product = getCheckout($pdo);
+                $product = createProducts($product);
+                $checkoutProducts[] = reset($product);
                 $_SESSION['checkout'] = $checkoutProducts;
             } else {
                 $checkoutProducts = $_SESSION['checkout'];
