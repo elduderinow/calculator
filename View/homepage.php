@@ -2,7 +2,7 @@
 
 <body>
   <div class="container">
-    <div class="display-1">DE PRIJS IS: <?php echo $finalPrice ?> SNEURIES</div>
+    <div class="display-1">€<?php echo $finalPrice ?></div>
     <div class="row">
       <div class="col-sm products">
         <!-- select customer checkout -->
