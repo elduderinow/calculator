@@ -2,7 +2,7 @@
 
 <body>
   <div class="container">
-      <div class="row">
+    <div class="row">
       <div class="col-sm products">
         <!-- select customer checkout -->
         <div class="row">
@@ -20,7 +20,7 @@
                   <?php echo htmlspecialchars($customer->getFullName()) ?>
                 </option>
                 <?php endforeach; ?>
-                <input type="submit" value="Update">
+                <input class="btn btn-primary ml-3 mb-2" type="submit" value="Update">
               </select>
             </form>
             <!-- total checkout -->
@@ -68,7 +68,7 @@
                                         echo 'please Update first';
                                     } else {
                                         echo '€ ' . $totalBasket;
-                          }?></b></td>
+                                    }?></b></td>
             </tr>
             <tr>
               <td>fixed discount customer</td>
@@ -95,7 +95,7 @@
                                         echo 'n/a';
                                     } else {
                                         echo '€ ' . ($totalBasket - $customerFixed - $customerFixedGroup);
-                          }?></b></td>
+                                    }?></b></td>
             </tr>
             <tr>
               <td>variable discount (in%)</td>
@@ -107,7 +107,7 @@
                                     }?></td>
             </tr>
             <tr>
-                <td><b>FINAL TOTAL</b></td>
+              <td><b>FINAL TOTAL</b></td>
               <td width="15px"></td>
               <td align="right"><b><?php if (!isset($_POST['customer-id'])) {
                                         echo 'n/a';
