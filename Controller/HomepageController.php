@@ -102,6 +102,13 @@ class HomepageController {
             return Array_sum($subSumArr);
         }
 
+        function calcTotalAmount($products) {
+            foreach ($products as $product) {
+                $subSumArr[] = $product->getPrice();
+            }
+            return Array_sum($subSumArr);
+        }
+
         //compare group fixed and variable => highest VALUE of customergroup
         function getHighestValueCustomerGroup($totalPrice, $fixedValueGroup, $variableDiscountGroup) {
             if ($variableDiscountGroup) {
@@ -166,9 +173,14 @@ class HomepageController {
             }
 
             $finalPrice = getTotalPrice($totalBasket, $customerFixed, $customerFixedGroup, $bestVarDiscount);
-            var_dump($finalPrice);
             $finalPrice = $finalPrice <= 0 ? 0 : number_format($finalPrice, 2, ',', '');
             $_SESSION['finalPrice'] = $finalPrice;
+        }
+
+        function dump(){
+            var_dump((int)$_GET['id']);
+            var_dump($_SESSION['checkout']);
+            echo "----------------------";
         }
 
         if (isset($_GET['id']) && isset($_GET['button'])) {
@@ -183,11 +195,9 @@ class HomepageController {
                 $_SESSION['checkout'] = $checkoutProducts;
             } else {
                 $checkoutProducts = $_SESSION['checkout'];
-                foreach ($checkoutProducts as $prods) {
-                    if ($_GET['id'] == $prods->getId()) {
-                        echo $prods->getId();
-                    }
-                }
+                unset($checkoutProducts[(int)$_GET['id']]);
+                $_SESSION['checkout'] = array_values($checkoutProducts);
+                $checkoutProducts = $_SESSION['checkout'];
             }
         }
 
