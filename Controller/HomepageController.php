@@ -7,6 +7,7 @@ class HomepageController {
         session_start();
         $pdo = Connection::Open();
 
+        // Get all products
         function getProducts($pdo, $offset = 0, $limit = 5) {
             $handle = $pdo->prepare('SELECT * FROM product LIMIT :limit OFFSET :offset;');
             $handle->bindValue(':limit', $limit, PDO::PARAM_INT);
@@ -16,6 +17,7 @@ class HomepageController {
             return $products;
         }
 
+        // Create products
         function createProducts($products) {
             $result = [];
             foreach ($products as $product) {
@@ -25,6 +27,7 @@ class HomepageController {
             return $result;
         }
 
+        // Get all customers
         function getCustomers($pdo) {
             $handle = $pdo->prepare('SELECT * FROM customer');
             $handle->execute();
@@ -32,6 +35,7 @@ class HomepageController {
             return $customers;
         }
 
+        // Create customers
         function createCustomers($pdo) {
             $customers = getCustomers($pdo);
             $result = [];
@@ -42,7 +46,7 @@ class HomepageController {
             return $result;
         }
 
-        //Customersgroup
+        // get Customersgroup
         function getCustomersGroup($pdo) {
             $handle = $pdo->prepare('SELECT customer_group.id, name, parent_id, customer_group.fixed_discount, customer_group.variable_discount FROM customer_group LEFT JOIN customer ON customer.group_id = customer_group.id WHERE customer.group_id = :group_id');
             $handle->bindValue(':group_id', $_SESSION['customer-groupId'] ?: 2);
@@ -51,11 +55,13 @@ class HomepageController {
             return $customersGroup;
         }
 
+        // Create customergroup object
         function createCustomersGroup($customerGroup) {
             $customGroup = new CustomerGroup((int)$customerGroup['id'], $customerGroup['name'], (int)$customerGroup['parent_id'], (int)$customerGroup['fixed_discount'], (int)$customerGroup['variable_discount']);
             return $customGroup;
         }
 
+        // Recursive function to get all subgroups with parent id's
         function addSubGroups($pdo, $customer, $id) {
             if ($id === 0) {
                 return;
@@ -70,6 +76,7 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
+        // Overarching function to group up all customer group related logic
         function getCompleteCustomerGroups($pdo, $customer) {
             $customerGroupData = getCustomersGroup($pdo);
             $customerGroup = createCustomersGroup($customerGroupData);
@@ -78,6 +85,7 @@ class HomepageController {
             addSubGroups($pdo, $customer, $customerGroup->getParentId());
         }
 
+        // Find a customer using the id
         function findCustomer($customer) {
             if ($customer->getId() === $_SESSION['customer-id']) {
                 return $customer;
