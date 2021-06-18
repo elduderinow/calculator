@@ -62,13 +62,13 @@
           </thead>
           <tbody>
             <tr>
-              <td>TOTAL</td>
+              <td><b>TOTAL</b></td>
               <td width="15px"></td>
-              <td align="right"><?php if (!isset($_POST['customer-id'])) {
+              <td align="right"><b><?php if (!isset($_POST['customer-id'])) {
                                         echo 'please Update first';
                                     } else {
                                         echo '€ ' . $totalBasket;
-                                    }?></td>
+                          }?></b></td>
             </tr>
             <tr>
               <td>fixed discount customer</td>
@@ -89,13 +89,13 @@
                                     }?></td>
             </tr>
             <tr>
-              <td>SUBTOTAL</td>
+              <td><b>SUBTOTAL</b></td>
               <td width="15px"></td>
-              <td align="right"><?php if (!isset($_POST['customer-id'])) {
+              <td align="right"><b><?php if (!isset($_POST['customer-id'])) {
                                         echo 'n/a';
                                     } else {
                                         echo '€ ' . ($totalBasket - $customerFixed - $customerFixedGroup);
-                                    }?></td>
+                          }?></b></td>
             </tr>
             <tr>
               <td>variable discount (in%)</td>
@@ -107,13 +107,13 @@
                                     }?></td>
             </tr>
             <tr>
-              <td>FINAL TOTAL</td>
+                <td><b>FINAL TOTAL</b></td>
               <td width="15px"></td>
-              <td align="right"><?php if (!isset($_POST['customer-id'])) {
+              <td align="right"><b><?php if (!isset($_POST['customer-id'])) {
                                         echo 'n/a';
                                     } else {
                                         echo '€ ' . $finalPrice;
-                                    }?></td>
+                                    }?></b></td>
             </tr>
           </tbody>
         </table>
